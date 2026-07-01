@@ -866,18 +866,6 @@
   document.querySelectorAll('.tab-btn.disabled').forEach(btn => {
     btn.addEventListener('click', e => e.preventDefault());
   });
-
-  (idx) {
-    const list = loadTechnicians();
-    list.splice(idx, 1);
-    saveTechnicians(list);
-    renderTechList();
-  }
-
-
-  // Init
-  renderTechList();
-
   /* ── LIVE TIMESTAMP ── */
   const MO=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   const DA=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
