@@ -867,84 +867,13 @@
     btn.addEventListener('click', e => e.preventDefault());
   });
 
-  /* ── TECHNICIAN MANAGEMENT ── */
-  const TECH_KEY = 'pms_technicians';
-
-  function loadTechnicians() {
-    try { return JSON.parse(localStorage.getItem(TECH_KEY)) || []; }
-    catch(e) { return []; }
-  }
-
-  function saveTechnicians(list) {
-    localStorage.setItem(TECH_KEY, JSON.stringify(list));
-  }
-
-  function renderTechList() {
-    const list = loadTechnicians();
-    const container = document.getElementById('techList');
-    const empty = document.getElementById('techEmpty');
-    // Remove old rows (keep empty msg)
-    container.querySelectorAll('.tech-row').forEach(r => r.remove());
-    if (list.length === 0) {
-      empty.style.display = 'block';
-    } else {
-      empty.style.display = 'none';
-      list.forEach((name, idx) => {
-        const row = document.createElement('div');
-        row.className = 'tech-row';
-        row.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:.6rem .75rem;background:var(--surface2);border:1px solid var(--border);border-radius:9px;margin-bottom:.45rem;';
-        row.innerHTML = `
-          <div style="display:flex;align-items:center;gap:10px;">
-            <div style="width:30px;height:30px;border-radius:7px;background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.25);display:flex;align-items:center;justify-content:center;font-family:'Rajdhani',sans-serif;font-size:.75rem;font-weight:700;color:var(--accent2);">${String(idx+1).padStart(2,'0')}</div>
-            <span style="font-size:.88rem;color:var(--text);">${name}</span>
-          </div>
-          <button onclick="removeTechnician(${idx})" style="width:28px;height:28px;border-radius:6px;border:1px solid rgba(239,68,68,.3);background:rgba(239,68,68,.08);color:var(--danger);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-            <svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-          </button>`;
-        container.appendChild(row);
-      });
-    }
-    populateTechSelects(list);
-  }
-
-  function populateTechSelects(list) {
-    ['elec-tech','vib-tech'].forEach(id => {
-      const sel = document.getElementById(id);
-      const current = sel.value;
-      sel.innerHTML = '<option value="" disabled selected>Select technician...</option>';
-      list.forEach(name => {
-        const opt = document.createElement('option');
-        opt.value = name; opt.textContent = name;
-        sel.appendChild(opt);
-      });
-      if (list.includes(current)) sel.value = current;
-    });
-  }
-
-  function addTechnician() {
-    const input = document.getElementById('newTechName');
-    const name = input.value.trim();
-    if (!name) { input.focus(); return; }
-    const list = loadTechnicians();
-    if (list.includes(name)) { showToast('⚠ Name already exists.', true); return; }
-    list.push(name);
-    saveTechnicians(list);
-    input.value = '';
-    renderTechList();
-    showToast('✓ Technician added.');
-  }
-
-  function removeTechnician(idx) {
+  (idx) {
     const list = loadTechnicians();
     list.splice(idx, 1);
     saveTechnicians(list);
     renderTechList();
   }
 
-  // Allow Enter key to add technician
-  document.getElementById('newTechName').addEventListener('keydown', function(e){
-    if (e.key === 'Enter') { e.preventDefault(); addTechnician(); }
-  });
 
   // Init
   renderTechList();
@@ -1181,7 +1110,7 @@
   });
 
   /* ── CHEMICAL SUBMIT ── */
-  document.getElementById('chemicalForm').addEventListener('submit', function(e) {
+  document.getElementById('chemicalForm') && document.getElementById('chemicalForm').addEventListener('submit', function(e) {
     e.preventDefault();
     var btn = document.getElementById('chemSubmitBtn');
     btn.disabled = true; btn.innerHTML = SPIN_SVG + ' Submitting...';
@@ -1226,6 +1155,9 @@
       if (e.key === 'Enter') doLogin();
     });
   });
+
+  const SPIN_SVG = '<svg viewBox="0 0 24 24" style="animation:spin 1s linear infinite;width:17px;height:17px;stroke:#fff;fill:none;stroke-width:2.2"><path d="M21 12a9 9 0 1 1-6.22-8.56"/></svg>';
+  const SEND_SVG = '<svg viewBox="0 0 24 24" style="width:17px;height:17px;stroke:#fff;fill:none;stroke-width:2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>';
 
   function doLogin() {
     var username = document.getElementById('loginUser').value.trim();
@@ -1390,10 +1322,10 @@
     cards.forEach(function(c){ c.querySelector('.del-btn').disabled = cards.length === 1; });
   }
 
-  addPRItem();
+  if(document.getElementById('prItemList')) addPRItem();
 
   /* PURCHASE SUBMIT */
-  document.getElementById('purchaseForm').addEventListener('submit', function(e) {
+  document.getElementById('purchaseForm') && document.getElementById('purchaseForm').addEventListener('submit', function(e) {
     e.preventDefault();
     var btn = document.getElementById('prSubmitBtn');
     btn.disabled = true; btn.innerHTML = SPIN_SVG + ' Submitting...';
